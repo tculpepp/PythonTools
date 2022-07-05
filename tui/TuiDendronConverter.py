@@ -13,4 +13,6 @@ modulesDir = directory_find('Modules')
 for path, dir, files in os.walk(modulesDir):
     for name in files:
         if name.endswith('.html'):
-            print(name)  
+            # this complex sequence chops up the file name to match the structure
+            new_name = name[4:-5]+name[3:4]+name[-5:]
+            print(new_name)

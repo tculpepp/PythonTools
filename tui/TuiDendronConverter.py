@@ -64,3 +64,12 @@ for path, dir, files in os.walk(modulesDir):
 print('Converting Syllabus Files...')
 for path, dir, files in os.walk(syllabusDir):
     html_to_markdown('.html', script_temp_dir)
+
+dir_list = [('Modules', modulesDir), ('Syllabus', syllabusDir)]
+
+for dir in dir_list:
+    print('Converting '+dir_list+' files...')
+    for path, dir, files in os.walk(dir)
+        source_full_path = path+"/"+file
+        href_converter(source_full_path)
+        html_to_markdown('.html', files)

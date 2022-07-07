@@ -1,5 +1,39 @@
+##############################
+# To Do:
+#  clean footer from HTML pages
+#  organize files for import
+#  create module index file
+#  dendron import command
+#  copy assets into repo w/user confirmation
+#  cleanup w/user confirmation
+##############################
 import os, subprocess
 from bs4 import BeautifulSoup
+
+# let's set some variables before we start executing
+# find the modules and syllabus directories
+# set the assets dir and make the script working dir
+modulesDir = directory_find('Modules')
+syllabusDir = directory_find('Syllabus')
+course = input("Course Number: ")
+assetsDir = "/assets/"+course+"/"
+#  where the program will store files temporarily while modifying them
+script_temp_dir = "tui/temp_working/"+course
+os.makedirs(script_temp_dir, exist_ok=True)
+# list of what directories to look for to convert to markdown (DirHumanNameString, DirName)
+dir_list = [('Modules', modulesDir), ('Syllabus', syllabusDir)]
+
+# here we start executing
+for dir in dir_list:
+    print('Converting '+dir[0]+' files...')
+    for path, dir, files in os.walk(dir[1]):
+        for name in files:
+            if name.endswith('.html'):
+                source_full_path = path+"/"+name
+                href_converter(source_full_path)
+                html_to_markdown(script_temp_dir)
+
+#### Functions ####
 
 # this function recursively searches for a directory and then returns its path
 # a directory can be supplied as an argument or it will default to the current dir
@@ -7,22 +41,15 @@ def directory_find(dirName, root='.'):
     for path, dirs, files in os.walk(root):
         if dirName in dirs:
             return os.path.join(path, dirName)
-# find the modules and syllabus directories
-# set the assets dir and make the script working dir
-modulesDir = directory_find('Modules')
-syllabusDir = directory_find('Syllabus')
-course = input("Course Number: ")
-assetsDir = "/assets/"+course+"/"
-script_temp_dir = "tui/temp_working/"+course
-os.makedirs(script_temp_dir, exist_ok=True)
 
+# this converts the internal document links to match the dendron file structure (assetsDir)
 def href_converter(html_file):
     with open(html_file) as fp:
         soup = BeautifulSoup(fp, 'html.parser')
     for a in soup.findAll('a'):
         url_string = ""
         # this loop replaces all local file links with contents of new_tag
-        # start by ignoring all web links
+        # start by ignoring all web links (href)
         try:
             if not str(a['href']).startswith('http'):
                 url_string = str(a['href'])
@@ -42,25 +69,12 @@ def href_converter(html_file):
         with open(html_file, "w") as file:
             file.write(str(soup))
 
+# This function standardizes the filenames and calls pandoc to convert html to MD
 def html_to_markdown(out_dir):
     if not path.endswith('Syllabus'):
         out_name = name[4:-5]+name[3:4]+".md"
     else:
         out_name = name[:-5]+".md"
-    # source_full_path = path+"/"+name
     out_full_path = out_dir+"/"+out_name
     print(out_name)
-    # href_converter(source_full_path)
-    
     os.system("pandoc --wrap=none --from html --to markdown_strict "+source_full_path+" -o "+out_full_path)
-
-dir_list = [('Modules', modulesDir), ('Syllabus', syllabusDir)]
-
-for dir in dir_list:
-    print('Converting '+dir[0]+' files...')
-    for path, dir, files in os.walk(dir[1]):
-        for name in files:
-            if name.endswith('.html'):
-                source_full_path = path+"/"+name
-                href_converter(source_full_path)
-                html_to_markdown(script_temp_dir)

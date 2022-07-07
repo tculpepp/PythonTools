@@ -85,6 +85,7 @@ dendron importPod --podID dendron.markdown --wsRoot .
 ## file structure for import
 
 ### Before Import
+```
 .
 └── projects
     ├── p1
@@ -95,8 +96,9 @@ dendron importPod --podID dendron.markdown --wsRoot .
         ├── three.md
         ├── four.md
         └── three.gif
-
+```
 ### After Import
+```
 .
 └── vault
     ├── assets
@@ -108,5 +110,5 @@ dendron importPod --podID dendron.markdown --wsRoot .
     ├── projects.p2.md
     ├── projects.p2.three.md
     └── projects.p2.four.md
-
+```
 

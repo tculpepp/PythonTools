@@ -29,8 +29,14 @@ for dir in dir_list:
     for path, dir, files in os.walk(dir[1]):
         for name in files:
             if name.endswith('.html'):
-                source_full_path = path+"/"+name
-                href_converter(source_full_path)
+                with open(name) as fp:
+                    soup = BeautifulSoup(fp, 'html.parser')
+                # source_full_path = path+"/"+name
+                # href_converter(source_full_path)
+                href_converter(soup)
+                html_cleaner(soup)
+                with open(name, "w") as file:
+                    file.write(str(soup))
                 html_to_markdown(script_temp_dir)
 
 #### Functions ####
@@ -43,9 +49,9 @@ def directory_find(dirName, root='.'):
             return os.path.join(path, dirName)
 
 # this converts the internal document links to match the dendron file structure (assetsDir)
-def href_converter(html_file):
-    with open(html_file) as fp:
-        soup = BeautifulSoup(fp, 'html.parser')
+def href_converter(soup):
+    # with open(html_file) as fp:
+    #     soup = BeautifulSoup(fp, 'html.parser')
     for a in soup.findAll('a'):
         url_string = ""
         # this loop replaces all local file links with contents of new_tag
@@ -65,9 +71,10 @@ def href_converter(html_file):
                 a.replace_with(new_tag)
         except:
             print('a strange tag was skipped')
+    return(soup)
         #  overwrite the original file with the changes
-        with open(html_file, "w") as file:
-            file.write(str(soup))
+        # with open(html_file, "w") as file:
+        #     file.write(str(soup))
 
 # This function standardizes the filenames and calls pandoc to convert html to MD
 def html_to_markdown(out_dir):
@@ -78,3 +85,11 @@ def html_to_markdown(out_dir):
     out_full_path = out_dir+"/"+out_name
     print(out_name)
     os.system("pandoc --wrap=none --from html --to markdown_strict "+source_full_path+" -o "+out_full_path)
+
+# this function removes the footer from the HTML doc (or anything else specified)
+def html_cleaner(soup):
+    # with open(html_file) as fp:
+    #     soup = BeautifulSoup(fp, 'html.parser')
+    for a in soup.findAll(id='bottomlink'): # CHECK THIS ID title!!!!
+        a.decompose()
+    return(soup)

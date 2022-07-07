@@ -53,7 +53,7 @@ def href_converter(soup):
     # with open(html_file) as fp:
     #     soup = BeautifulSoup(fp, 'html.parser')
     for a in soup.findAll('a'):
-        url_string = ""
+        url_string = "" # can this be removed?
         # this loop replaces all local file links with contents of new_tag
         # start by ignoring all web links (href)
         try:

@@ -10,35 +10,6 @@
 import os, subprocess
 from bs4 import BeautifulSoup
 
-# let's set some variables before we start executing
-# find the modules and syllabus directories
-# set the assets dir and make the script working dir
-modulesDir = directory_find('Modules')
-syllabusDir = directory_find('Syllabus')
-course = input("Course Number: ")
-assetsDir = "/assets/"+course+"/"
-#  where the program will store files temporarily while modifying them
-script_temp_dir = "tui/temp_working/"+course
-os.makedirs(script_temp_dir, exist_ok=True)
-# list of what directories to look for to convert to markdown (DirHumanNameString, DirName)
-dir_list = [('Modules', modulesDir), ('Syllabus', syllabusDir)]
-
-# here we start executing
-for dir in dir_list:
-    print('Converting '+dir[0]+' files...')
-    for path, dir, files in os.walk(dir[1]):
-        for name in files:
-            if name.endswith('.html'):
-                with open(name) as fp:
-                    soup = BeautifulSoup(fp, 'html.parser')
-                # source_full_path = path+"/"+name
-                # href_converter(source_full_path)
-                href_converter(soup)
-                html_cleaner(soup)
-                with open(name, "w") as file:
-                    file.write(str(soup))
-                html_to_markdown(script_temp_dir)
-
 #### Functions ####
 
 # this function recursively searches for a directory and then returns its path
@@ -50,8 +21,6 @@ def directory_find(dirName, root='.'):
 
 # this converts the internal document links to match the dendron file structure (assetsDir)
 def href_converter(soup):
-    # with open(html_file) as fp:
-    #     soup = BeautifulSoup(fp, 'html.parser')
     for a in soup.findAll('a'):
         url_string = "" # can this be removed?
         # this loop replaces all local file links with contents of new_tag
@@ -72,9 +41,6 @@ def href_converter(soup):
         except:
             print('a strange tag was skipped')
     return(soup)
-        #  overwrite the original file with the changes
-        # with open(html_file, "w") as file:
-        #     file.write(str(soup))
 
 # This function standardizes the filenames and calls pandoc to convert html to MD
 def html_to_markdown(out_dir):
@@ -88,8 +54,35 @@ def html_to_markdown(out_dir):
 
 # this function removes the footer from the HTML doc (or anything else specified)
 def html_cleaner(soup):
-    # with open(html_file) as fp:
-    #     soup = BeautifulSoup(fp, 'html.parser')
-    for a in soup.findAll(id='bottomlink'): # CHECK THIS ID title!!!!
+    for a in soup.findAll(class_="rowBottom"):
         a.decompose()
     return(soup)
+
+
+# let's set some variables before we start executing
+# find the modules and syllabus directories
+# set the assets dir and make the script working dir
+modulesDir = directory_find('Modules')
+syllabusDir = directory_find('Syllabus')
+course = input("Course Number: ")
+assetsDir = "/assets/"+course+"/"
+#  where the program will store files temporarily while modifying them
+script_temp_dir = "tui/temp_working/"+course
+os.makedirs(script_temp_dir, exist_ok=True)
+# list of what directories to look for to convert to markdown (DirHumanNameString, DirName)
+dir_list = [('Modules', modulesDir), ('Syllabus', syllabusDir)]
+
+# here we start executing
+for dir in dir_list:
+    print('Converting '+dir[0]+' files...')
+    for path, dir, files in os.walk(dir[1]):
+        for name in files:
+            if name.endswith('.html'):
+                source_full_path = path+"/"+name
+                with open(source_full_path) as fp:
+                    soup = BeautifulSoup(fp, 'html.parser')
+                href_converter(soup)
+                html_cleaner(soup)
+                with open(source_full_path, "w") as file:
+                    file.write(str(soup))
+                html_to_markdown(script_temp_dir)

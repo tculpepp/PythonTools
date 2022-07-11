@@ -1,13 +1,13 @@
 ##############################
 # To Do:
-#  clean footer from HTML pages
-#  organize files for import
+#  clean footer from HTML pages DONE
+#  organize files for import IN PROCESS
 #  create module index file
 #  dendron import command
 #  copy assets into repo w/user confirmation
 #  cleanup w/user confirmation
 ##############################
-import os, subprocess
+import os, subprocess, shutil
 from bs4 import BeautifulSoup
 
 #### Functions ####
@@ -82,11 +82,13 @@ os.mkdirs(assetsDir, exist_ok=True)
 
 # here we start executing
 for dir in dir_list:
-    print('Converting '+dir[0]+' files...')
-    for path, dir, files in os.walk(dir[1]):
+    # print('Converting '+dir[0]+' files...')
+    # for path, dir, files in os.walk(dir[1]):
+    print('Converting HTML to Markdown and moving asset files...')
+    for path, dir, files in os.walk('.'):
         for name in files:
+            source_full_path = path+"/"+name
             if name.endswith('.html'):
-                source_full_path = path+"/"+name
                 with open(source_full_path) as fp:
                     soup = BeautifulSoup(fp, 'html.parser')
                 href_converter(soup)
@@ -94,23 +96,23 @@ for dir in dir_list:
                 with open(source_full_path, "w") as file:
                     file.write(str(soup))
                 html_to_markdown(script_temp_dir)
+            else:
+                shutil.copy2(source_full_path, assetsDir)          
 print('HTML to Markdown conversion complete')
-
-
 
 # should this function be built into the initial save rather than after the fact?
 # this should move all the files to the correct directory structure for import
-print('Building import directory structure')
-for file in os.walk(script_temp_dir):
+for path, dir, file in os.walk(script_temp_dir):
+    source_full_path = path+"/"+name
     match file[3:4]:
         case '1':
-            Print('mod1')
+            shutil.copy2(source_full_path, out_dir+'/mod1/' )
         case '2':
-            Print('mod2')
+            shutil.copy2(source_full_path, out_dir+'/mod2/' )
         case '3':
-            Print('mod3')
+            shutil.copy2(source_full_path, out_dir+'/mod3/' )
         case '4':
-            Print('mod4')
+            shutil.copy2(source_full_path, out_dir+'/mod4/' )
         case other:
             print('no mod found')
 print ('Files moved into directory structure')

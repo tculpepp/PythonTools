@@ -95,7 +95,7 @@ for dir in dir_list:
                 html_cleaner(soup)
                 with open(source_full_path, "w") as file:
                     file.write(str(soup))
-                match file[3:4]:
+                match name[-6:-5]:
                     case '1':
                         # shutil.copy2(source_full_path, out_dir+'/mod1/')
                         html_to_markdown(out_dir+'/mod1/')

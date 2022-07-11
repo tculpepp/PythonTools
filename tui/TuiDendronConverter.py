@@ -65,12 +65,20 @@ def html_cleaner(soup):
 modulesDir = directory_find('Modules')
 syllabusDir = directory_find('Syllabus')
 course = input("Course Number: ")
-assetsDir = "/assets/"+course+"/"
+
 #  where the program will store files temporarily while modifying them
 script_temp_dir = "tui/temp_working/"+course
 os.makedirs(script_temp_dir, exist_ok=True)
 # list of what directories to look for to convert to markdown (DirHumanNameString, DirName)
 dir_list = [('Modules', modulesDir), ('Syllabus', syllabusDir)]
+out_dir = 'out/'+course
+assetsDir = "out/assets/"+course+"/"
+# make output directory structure
+i = 1
+while (i <= 4):
+    os.mkdirs(out_dir+'/mod'+i, exist_ok=True)
+    i += 1
+os.mkdirs(assetsDir, exist_ok=True)
 
 # here we start executing
 for dir in dir_list:
@@ -86,3 +94,24 @@ for dir in dir_list:
                 with open(source_full_path, "w") as file:
                     file.write(str(soup))
                 html_to_markdown(script_temp_dir)
+print('HTML to Markdown conversion complete')
+
+
+
+# should this function be built into the initial save rather than after the fact?
+# this should move all the files to the correct directory structure for import
+print('Building import directory structure')
+for file in os.walk(script_temp_dir):
+    match file[3:4]:
+        case '1':
+            Print('mod1')
+        case '2':
+            Print('mod2')
+        case '3':
+            Print('mod3')
+        case '4':
+            Print('mod4')
+        case other:
+            print('no mod found')
+print ('Files moved into directory structure')
+import_dendron = input('Do you want to import into Dendron? (y/n): ')

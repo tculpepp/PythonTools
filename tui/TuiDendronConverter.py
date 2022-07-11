@@ -2,11 +2,11 @@
 # To Do:
 #  clean footer from HTML pages DONE
 #  organize files for import IN PROCESS
-#  create module index file
+#  create module index file DRAFTED
 #  dendron import command
-#  copy assets into repo w/user confirmation
-#  cleanup w/user confirmation
-#  unzipper
+#  copy assets into repo w/user confirmation DRAFTED
+#  cleanup w/user confirmation DRAFTED
+#  unzipper DRAFTED
 ##############################
 import os, subprocess, shutil
 from bs4 import BeautifulSoup

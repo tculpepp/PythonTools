@@ -6,11 +6,20 @@
 #  dendron import command
 #  copy assets into repo w/user confirmation
 #  cleanup w/user confirmation
+#  unzipper
 ##############################
 import os, subprocess, shutil
 from bs4 import BeautifulSoup
+from zipfile import ZipFile
 
 #### Functions ####
+
+def unzip_tui_file(filename)
+    with ZipFile(filename, 'r') as zipObj:
+    # Extract all the contents of zip file in different directory
+        zipObj.extractall()
+        # try to add a temp dir to capture everything into for ease later
+    print('File is unzipped in temp folder') 
 
 # this function recursively searches for a directory and then returns its path
 # a directory can be supplied as an argument or it will default to the current dir
@@ -64,7 +73,11 @@ def html_cleaner(soup):
 # set the assets dir and make the script working dir
 modulesDir = directory_find('Modules')
 syllabusDir = directory_find('Syllabus')
+zipFileName = input('Zip file path/name?: ')
 course = input("Course Number: ")
+os.mkdir('TuiConverterTemp')
+os.chdir('TuiConverterTemp')
+
 
 #  where the program will store files temporarily while modifying them
 script_temp_dir = "tui/temp_working/"+course
@@ -115,7 +128,16 @@ for dir in dir_list:
             else:
                 shutil.copy2(source_full_path, assetsDir)          
 print('HTML to Markdown conversion complete')
-import_dendron = input('Do you want to import into Dendron? (y/n): ')
+import_dendron = lower(input('Do you want to import into Dendron? (y/n): '))
+
+if import_dendron == 'y':
+    print('Importing into Dendron')
+    #insert dendron import command here
+    print('Dendron import complete')
+else:
+    print('Skipping Dendron Import')
+
+cleanup_decision = lower(input('Cleanup temporary files? (y/n): '))
 
 # # should this function be built into the initial save rather than after the fact?
 # # this should move all the files to the correct directory structure for import

@@ -95,25 +95,42 @@ for dir in dir_list:
                 html_cleaner(soup)
                 with open(source_full_path, "w") as file:
                     file.write(str(soup))
-                html_to_markdown(script_temp_dir)
+                match file[3:4]:
+                    case '1':
+                        # shutil.copy2(source_full_path, out_dir+'/mod1/')
+                        html_to_markdown(out_dir+'/mod1/')
+                    case '2':
+                        # shutil.copy2(source_full_path, out_dir+'/mod2/')
+                        html_to_markdown(out_dir+'/mod2/')
+                    case '3':
+                        # shutil.copy2(source_full_path, out_dir+'/mod3/')
+                        html_to_markdown(out_dir+'/mod3/')
+                    case '4':
+                        # shutil.copy2(source_full_path, out_dir+'/mod4/')
+                        html_to_markdown(out_dir+'/mod4/')
+                    case other:
+                        print('no mod found')
+                        html_to_markdown(out_dir)
+                # html_to_markdown(script_temp_dir)
             else:
                 shutil.copy2(source_full_path, assetsDir)          
 print('HTML to Markdown conversion complete')
-
-# should this function be built into the initial save rather than after the fact?
-# this should move all the files to the correct directory structure for import
-for path, dir, file in os.walk(script_temp_dir):
-    source_full_path = path+"/"+name
-    match file[3:4]:
-        case '1':
-            shutil.copy2(source_full_path, out_dir+'/mod1/' )
-        case '2':
-            shutil.copy2(source_full_path, out_dir+'/mod2/' )
-        case '3':
-            shutil.copy2(source_full_path, out_dir+'/mod3/' )
-        case '4':
-            shutil.copy2(source_full_path, out_dir+'/mod4/' )
-        case other:
-            print('no mod found')
-print ('Files moved into directory structure')
 import_dendron = input('Do you want to import into Dendron? (y/n): ')
+
+# # should this function be built into the initial save rather than after the fact?
+# # this should move all the files to the correct directory structure for import
+# for path, dir, file in os.walk(script_temp_dir):
+#     source_full_path = path+"/"+name
+#     match file[3:4]:
+#         case '1':
+#             shutil.copy2(source_full_path, out_dir+'/mod1/' )
+#         case '2':
+#             shutil.copy2(source_full_path, out_dir+'/mod2/' )
+#         case '3':
+#             shutil.copy2(source_full_path, out_dir+'/mod3/' )
+#         case '4':
+#             shutil.copy2(source_full_path, out_dir+'/mod4/' )
+#         case other:
+#             print('no mod found')
+# print ('Files moved into directory structure')
+

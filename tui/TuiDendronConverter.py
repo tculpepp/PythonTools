@@ -14,8 +14,8 @@ from zipfile import ZipFile
 
 #### Functions ####
 
-def unzip_tui_file(filename)
-    with ZipFile(filename, 'r') as zipObj:
+def unzip_tui_file(filename):
+    with ZipFile('../'+filename, 'r') as zipObj:
     # Extract all the contents of zip file in different directory
         zipObj.extractall()
         # try to add a temp dir to capture everything into for ease later
@@ -78,6 +78,8 @@ course = input("Course Number: ")
 os.mkdir('TuiConverterTemp')
 os.chdir('TuiConverterTemp')
 
+unzip_tui_file(zipFileName)
+
 
 #  where the program will store files temporarily while modifying them
 script_temp_dir = "tui/temp_working/"+course
@@ -89,9 +91,9 @@ assetsDir = "out/assets/"+course+"/"
 # make output directory structure
 i = 1
 while (i <= 4):
-    os.mkdirs(out_dir+'/mod'+i, exist_ok=True)
+    os.makedirs(out_dir+'/mod'+str(i), exist_ok=True)
     i += 1
-os.mkdirs(assetsDir, exist_ok=True)
+os.makedirs(assetsDir, exist_ok=True)
 
 # here we start executing
 for dir in dir_list:
@@ -108,27 +110,24 @@ for dir in dir_list:
                 html_cleaner(soup)
                 with open(source_full_path, "w") as file:
                     file.write(str(soup))
-                match name[-6:-5]:
-                    case '1':
-                        # shutil.copy2(source_full_path, out_dir+'/mod1/')
-                        html_to_markdown(out_dir+'/mod1/')
-                    case '2':
-                        # shutil.copy2(source_full_path, out_dir+'/mod2/')
-                        html_to_markdown(out_dir+'/mod2/')
-                    case '3':
-                        # shutil.copy2(source_full_path, out_dir+'/mod3/')
-                        html_to_markdown(out_dir+'/mod3/')
-                    case '4':
-                        # shutil.copy2(source_full_path, out_dir+'/mod4/')
-                        html_to_markdown(out_dir+'/mod4/')
-                    case other:
-                        print('no mod found')
-                        html_to_markdown(out_dir)
-                # html_to_markdown(script_temp_dir)
+                file_mod_num = name[-6:-5]
+                if file_mod_num == '1':
+                    html_to_markdown(out_dir+'/mod1/')
+                elif file_mod_num == '2':
+                    html_to_markdown(out_dir+'/mod2/')
+                elif file_mod_num == '3':
+                    html_to_markdown(out_dir+'/mod3/')
+                elif file_mod_num == '4':
+                    html_to_markdown(out_dir+'/mod4/')
+                else:
+                    print('no mod found')
+                    html_to_markdown(out_dir)
             else:
+                print(source_full_path)
+                print(assetsDir)
                 shutil.copy2(source_full_path, assetsDir)          
 print('HTML to Markdown conversion complete')
-import_dendron = lower(input('Do you want to import into Dendron? (y/n): '))
+import_dendron = input('Do you want to import into Dendron? (y/n): ').lower()
 
 if import_dendron == 'y':
     print('Importing into Dendron')
@@ -137,7 +136,7 @@ if import_dendron == 'y':
 else:
     print('Skipping Dendron Import')
 
-cleanup_decision = lower(input('Cleanup temporary files? (y/n): '))
+cleanup_decision = input('Cleanup temporary files? (y/n): ').lower()
 
 # # should this function be built into the initial save rather than after the fact?
 # # this should move all the files to the correct directory structure for import

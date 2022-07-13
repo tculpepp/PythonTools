@@ -5,6 +5,7 @@
 #  copy assets into repo w/user confirmation DRAFTED
 #  generally clean things up
 ##############################
+from operator import mod
 import os, shutil
 from bs4 import BeautifulSoup
 from zipfile import ZipFile
@@ -65,6 +66,22 @@ def html_cleaner(soup):
         a.decompose()
     return(soup)
 
+#  this function builds the index files for each section
+def create_index_file(file_list, out_dir):
+    cwd = os.getcwd()
+    print(cwd)
+    print(out_dir)
+    if not os.path.isdir(out_dir):
+        os.mkdir(out_dir)
+    with open(out_dir+'/index.md', 'w') as outfile:
+        for names in file_list:
+            name_full_path = out_dir+'/'+names
+            print(name_full_path)
+            with open(name_full_path) as infile:
+                outfile.write(infile.read())
+            outfile.write("\n\n**********************************\n\n")
+            os.remove(name_full_path)
+
 ####### main execution starts here ##########
 
 # make the working dir and move into it
@@ -92,6 +109,14 @@ while (i <= 4):
     i += 1
 os.makedirs(assetsDir, exist_ok=True)
 
+root_index_files = ['CourseOverview.md',
+                    'SignificanceOfCourse.md',
+                    'LearningOutcomes.md',
+                    'MaterialsAndBiblio.md',
+                    'CourseDescription.md',
+                    'NameAndCredit.md']
+
+
 print('Converting HTML to Markdown and moving asset files...')
 for path, dir, files in os.walk(extractedDir):
     if "out" in dir: # this little IF causes the 'out' directory to be excluded
@@ -118,11 +143,23 @@ for path, dir, files in os.walk(extractedDir):
                 print('no mod found')
                 html_to_markdown(out_dir)
         else:
-            print(source_full_path)
-            print(assetsDir)
             shutil.copy2(source_full_path, assetsDir)          
 print('HTML to Markdown conversion complete')
 shutil.rmtree('temp_working')
+
+create_index_file(root_index_files, './'+out_dir)
+
+# create the module index files
+moduleRange = range(1,5)
+for mod in moduleRange:
+    modNum = str(mod)
+    mod_out_dir = out_dir+'/mod'+modNum
+    module_index_files = ['home'+modNum+'.md',
+                    'objectives'+modNum+'.md',
+                    'background'+modNum+'.md']
+    create_index_file(module_index_files, mod_out_dir)
+
+
 import_dendron = input('Do you want to import into Dendron? (y/n): ').lower()
 
 if import_dendron == 'y':

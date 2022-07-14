@@ -1,6 +1,5 @@
 ##############################
 # To Do:
-#  create module index file 
 #  dendron import command
 #  copy assets into repo w/user confirmation DRAFTED
 #  generally clean things up
@@ -109,14 +108,6 @@ while (i <= 4):
     i += 1
 os.makedirs(assetsDir, exist_ok=True)
 
-root_index_files = ['CourseOverview.md',
-                    'SignificanceOfCourse.md',
-                    'LearningOutcomes.md',
-                    'MaterialsAndBiblio.md',
-                    'CourseDescription.md',
-                    'NameAndCredit.md']
-
-
 print('Converting HTML to Markdown and moving asset files...')
 for path, dir, files in os.walk(extractedDir):
     if "out" in dir: # this little IF causes the 'out' directory to be excluded
@@ -131,22 +122,22 @@ for path, dir, files in os.walk(extractedDir):
             with open(source_full_path, "w") as file:
                 file.write(str(soup))
             file_mod_num = name[3:4]
-            if file_mod_num == '1':
-                html_to_markdown(out_dir+'/mod1/')
-            elif file_mod_num == '2':
-                html_to_markdown(out_dir+'/mod2/')
-            elif file_mod_num == '3':
-                html_to_markdown(out_dir+'/mod3/')
-            elif file_mod_num == '4':
-                html_to_markdown(out_dir+'/mod4/')
+            if file_mod_num.isnumeric():
+                html_to_markdown(out_dir+'/mod'+file_mod_num+'/')
             else:
-                print('no mod found')
+                print('Syallabus File')
                 html_to_markdown(out_dir)
         else:
             shutil.copy2(source_full_path, assetsDir)          
 print('HTML to Markdown conversion complete')
 shutil.rmtree('temp_working')
 
+root_index_files = ['CourseOverview.md',
+                    'SignificanceOfCourse.md',
+                    'LearningOutcomes.md',
+                    'MaterialsAndBiblio.md',
+                    'CourseDescription.md',
+                    'NameAndCredit.md']
 create_index_file(root_index_files, './'+out_dir)
 
 # create the module index files

@@ -1,9 +1,18 @@
 ##############################
 # To Do:
-#  dendron import command
+#  dendron import command - doesn't create index file 
 #  copy assets into repo w/user confirmation DRAFTED
 #  generally clean things up
 ##############################
+
+##############################
+# Instructions
+# Just run the command and follow the prompts
+# location doesn't matter
+# directory for the zip file is RELATIVE
+# been copying to zip into the local dir to run from there
+##############################
+
 from operator import mod
 import os, shutil
 from bs4 import BeautifulSoup
@@ -74,12 +83,15 @@ def create_index_file(file_list, out_dir):
         os.mkdir(out_dir)
     with open(out_dir+'/index.md', 'w') as outfile:
         for names in file_list:
-            name_full_path = out_dir+'/'+names
-            print(name_full_path)
-            with open(name_full_path) as infile:
-                outfile.write(infile.read())
-            outfile.write("\n\n**********************************\n\n")
-            os.remove(name_full_path)
+            try:
+                name_full_path = out_dir+'/'+names
+                print(name_full_path)
+                with open(name_full_path) as infile:
+                    outfile.write(infile.read())
+                outfile.write("\n\n**********************************\n\n")
+                os.remove(name_full_path)
+            except:
+                print(names+" was not found so it was skipped.")
 
 ####### main execution starts here ##########
 
@@ -95,8 +107,8 @@ unzip_tui_file(zipFileName, extractedDir)
 
 #  set some directories
 course = input("Course Number: ")
-out_dir = 'out/'+course
-assetsDir = "out/assets/"+course+"/"
+out_dir = 'out/school/'+course
+assetsDir = "out/school/assets/"+course+"/"
 script_temp_dir = "temp_working/"+course
 
 os.makedirs(script_temp_dir, exist_ok=True)
@@ -125,7 +137,7 @@ for path, dir, files in os.walk(extractedDir):
             if file_mod_num.isnumeric():
                 html_to_markdown(out_dir+'/mod'+file_mod_num+'/')
             else:
-                print('Syallabus File')
+                print('Syllabus File')
                 html_to_markdown(out_dir)
         else:
             shutil.copy2(source_full_path, assetsDir)          
@@ -154,8 +166,10 @@ for mod in moduleRange:
 import_dendron = input('Do you want to import into Dendron? (y/n): ').lower()
 
 if import_dendron == 'y':
+    dendron_src = os.getcwd()+"/out"#+"/"+out_dir
+    print(dendron_src)
     print('Importing into Dendron')
-    #insert dendron import command here
+    os.system("dendron importPod --podId dendron.markdown --wsRoot '/Users/tculpepp/Documents/repos/dendron' --config src="+dendron_src+",vaultName=vault,indexName=index.md,noAddUUID:true")
     print('Dendron import complete')
 else:
     print('Skipping Dendron Import')
@@ -163,8 +177,8 @@ else:
 cleanup_decision = input('Cleanup temporary files? (y/n): ').lower()
 if cleanup_decision == 'y':
     shutil.rmtree(extractedDir)
-    # os.chdir('..')
-    # shutil.rmtree(workingDir)
+    os.chdir('..')
+    shutil.rmtree(workingDir)
     print('temporary files deleted')
 print('script complete.')
 exit()

@@ -23,7 +23,7 @@ def scrape_video_ids(source_file_path, playlist_name):
             href = link.get('href')
             if href.startswith('https://www.youtube.com'):
                 # print(href)
-                extracted_id_list.append(href.split('?v=')[1])
+                extracted_id_list.append(href.split('=')[1])
         except:
             pass
     return extracted_id_list

@@ -143,6 +143,7 @@ for path, dir, files in os.walk(extractedDir):
         else:
             shutil.copy2(source_full_path, assetsDir)          
 print('HTML to Markdown conversion complete')
+# this is the place to insert any work to be done prior to the temp files being removed
 shutil.rmtree('temp_working')
 
 root_index_files = ['CourseOverview.md',

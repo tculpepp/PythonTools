@@ -85,6 +85,10 @@ def add_list_items(youtube, video_list):
 
     print("Video Added: "+response['snippet']['title'])
 
+def create_course_playlists(background_file, course_name):
+    
+    return
+
 # here's where execution actually begins
 source_file = 'tui/CSC330-Reference/CSC330/Modules/Module1/Mod1Background.html'
 playlist_name = 'CSC330 Mod1'

@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 def scrape_video_ids(source_file_path):
     with open(source_file_path) as source:
         soup = BeautifulSoup(source, 'html.parser')
-    extracted_id_list = []
+    extracted_id_list = ['CSC330 Mod1']
     for link in soup.find_all("a"):
         try:
             href = link.get('href')
@@ -90,10 +90,11 @@ def create_course_playlists(background_file, course_name):
     return
 
 # here's where execution actually begins
-source_file = 'tui/CSC330-Reference/CSC330/Modules/Module1/Mod1Background.html'
-playlist_name = 'CSC330 Mod1'
+source_file = 'CSC330-Reference/CSC330/Modules/Module1/Mod1Background.html'
+
 
 video_id_list = scrape_video_ids(source_file)
 login_data = login()
+playlist_name = video_id_list.pop(0)
 json_data = create_playlist(login_data, playlist_name)
 add_list_items(login_data, video_id_list) 

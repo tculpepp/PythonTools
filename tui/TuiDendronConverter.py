@@ -164,14 +164,13 @@ for mod in moduleRange:
                     'background'+modNum+'.md']
     create_index_file(module_index_files, mod_out_dir)
 
-
 import_dendron = input('Do you want to import into Dendron? (y/n): ').lower()
 
 if import_dendron == 'y':
     dendron_src = os.getcwd()+"/out"#+"/"+out_dir
     print(dendron_src)
     print('Importing into Dendron')
-    os.system("dendron importPod --podId dendron.markdown --wsRoot '/Users/tculpepp/Documents/repos/dendron' --config src="+dendron_src+",vaultName:vault,indexName:index.md,noAddUUID:true")
+    os.system("dendron importPod --podId dendron.markdown --wsRoot '/Users/tculpepp/Documents/repos/dendron' --config src="+dendron_src+",vaultName=vault,indexName=index.md,noAddUUID:true")
     print('Dendron import complete')
 else:
     print('Skipping Dendron Import')

@@ -1,4 +1,5 @@
 ####################################
+# For now, execute this through playlist_temp.py
 # this has been refactored to just hold functions with no execution code
 # this takes an HTML input file, scrapes for youtube links, and extracts the 
 # video ID's

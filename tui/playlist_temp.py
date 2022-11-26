@@ -1,7 +1,8 @@
+# change the course number as appropriate and ensure the playlist_temp directory exists with all the background.html files
 import os, time
 import youtubePlaylistmaker as yt
 
-course = 'CSC416'
+course = 'CSC424'
 video_id_master_list = []
 for path, dir, files in os.walk('playlist_temp'):
     for name in files:

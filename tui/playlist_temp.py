@@ -2,7 +2,7 @@
 import os, time
 import youtubePlaylistmaker as yt
 
-course = 'CSC424'
+course = 'ITM426'
 video_id_master_list = []
 for path, dir, files in os.walk('playlist_temp'):
     for name in files:

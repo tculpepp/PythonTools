@@ -5,3 +5,4 @@ tui/temp_working/
 TuiConverterTemp/
 *.json
 */venv/
+*/.venv/
